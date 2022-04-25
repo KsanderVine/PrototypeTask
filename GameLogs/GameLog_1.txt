@@ -1,0 +1,21 @@
+[16:31:08]:Game started
+[16:31:09]:Player shooting
+[16:31:09]:Player shooting
+[16:31:10]:Player shooting
+[16:31:10]:Agent dying
+[16:31:10]:Player shooting
+[16:31:11]:Player shooting
+[16:31:11]:Player shooting
+[16:31:11]:Agent dying
+[16:31:11]:Player shooting
+[16:31:12]:Player shooting
+[16:31:12]:Agent dying
+[16:31:13]:Player shooting
+[16:31:13]:Player shooting
+[16:31:14]:Player shooting
+[16:31:14]:Player shooting
+[16:31:15]:Player thrown back
+[16:31:15]:Player shooting
+[16:31:15]:Agent dying
+[16:31:17]:Player shooting
+[16:31:17]:Game result: Defeat

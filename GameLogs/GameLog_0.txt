@@ -1,0 +1,5 @@
+[16:31:02]:Game started
+[16:31:04]:Player shooting
+[16:31:04]:Player thrown back
+[16:31:06]:Player shooting
+[16:31:06]:Game result: Defeat
