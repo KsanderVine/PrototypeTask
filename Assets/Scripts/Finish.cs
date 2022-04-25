@@ -8,8 +8,7 @@ public class Finish : MonoBehaviour
     {
         if(collider.gameObject.tag.Equals("Player"))
         {
-            Enemy[] enemies = FindObjectsOfType<Enemy>(false);
-            if (enemies.Length == 0)
+            if (GameRules.EnemiesCount == 0)
             {
                 GameRules.RestartLevel(true);
             }

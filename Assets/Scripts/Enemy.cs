@@ -31,6 +31,7 @@ public class Enemy : MonoBehaviour
     public void Start()
     {
         MeshRenderer.material = new Material(Material);
+        GameRules.ChangeEnemiesCount(1);
     }
 
     public void FixedUpdate()
@@ -94,6 +95,7 @@ public class Enemy : MonoBehaviour
         if (_isDead)
             return;
 
+        GameRules.ChangeEnemiesCount(-1);
         GameRules.Log("Agent dying");
 
         Destroy(Gun.gameObject);

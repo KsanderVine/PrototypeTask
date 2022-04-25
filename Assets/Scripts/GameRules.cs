@@ -11,11 +11,14 @@ public class GameRules : MonoBehaviour
     public static bool IsRestarting { get; private set; }
     public static List<string> GameLogs { get; private set; }
 
+    public static int EnemiesCount { get; private set; }
+
     public UIResults VictoryResult;
     public UIResults DefeatResult;
 
     private void Awake()
     {
+        EnemiesCount = 0;
         Instance = this;
     }
 
@@ -28,6 +31,11 @@ public class GameRules : MonoBehaviour
         GameLogs = new List<string>();
 
         Log("Game started");
+    }
+
+    public static void ChangeEnemiesCount (int count)
+    {
+        EnemiesCount += count;
     }
 
     public static void RestartLevel (bool isVictory)
