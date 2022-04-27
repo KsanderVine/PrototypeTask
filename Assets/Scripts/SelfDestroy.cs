@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelfDestroy : MonoBehaviour
+namespace DevTask.Utils
 {
-    public float TimeToDestroy;
-
-    public void Start()
+    public class SelfDestroy : MonoBehaviour
     {
-        Destroy(gameObject, TimeToDestroy);
+        public float TimeToDestroy;
+
+        public void Start()
+        {
+            Destroy(gameObject, TimeToDestroy);
+        }
     }
 }

@@ -1,4 +1,0 @@
-[16:50:17]:Game started
-[16:50:18]:Player shooting
-[16:50:19]:Agent dying
-[16:50:20]:Game result: Defeat

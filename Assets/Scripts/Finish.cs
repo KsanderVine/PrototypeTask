@@ -2,15 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Finish : MonoBehaviour
+namespace DevTask
 {
-    private void OnTriggerStay(Collider collider)
+    public class Finish : MonoBehaviour
     {
-        if(collider.gameObject.tag.Equals("Player"))
+        private void OnTriggerStay(Collider collider)
         {
-            if (GameRules.EnemiesCount == 0)
+            if (collider.gameObject.CompareTag("Player"))
             {
-                GameRules.RestartLevel(true);
+                if (GameRules.EnemiesCount == 0)
+                {
+                    GameRules.GetLevelResultsAndReload(true);
+                }
             }
         }
     }

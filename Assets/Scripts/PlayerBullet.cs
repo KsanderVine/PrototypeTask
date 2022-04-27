@@ -1,15 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DevTask.Enemies;
 
-public class PlayerBullet : Bullet
+namespace DevTask.Bullets
 {
-    protected override void TriggerCollision(Collider collision)
+    public class PlayerBullet : Bullet
     {
-        if (collision.tag.Equals("Enemy"))
+        protected override void TriggerCollision(Collider collision)
         {
-            Enemy enemy = collision.GetComponent<Enemy>();
-            enemy.Die();
+            if (collision.CompareTag("Enemy"))
+            {
+                Enemy enemy = collision.GetComponent<Enemy>();
+                enemy.Die();
+            }
         }
     }
 }

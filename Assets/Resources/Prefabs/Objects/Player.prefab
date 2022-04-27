@@ -295,6 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rigidbody: {fileID: 3762914724490412954}
   PlayerMotionSpeed: 30
+  PlayerCamera: {fileID: 3762914723237258649}
   CameraTransform: {fileID: 3762914723237258654}
   BulletPrefab: {fileID: 8497885650785953925, guid: 20a2bde194b9af24982f1d89a9a0c63b, type: 3}
   FireEffect: {fileID: 3416187714460353738, guid: 8548075b165dd9548bfcdd7551c6f37a, type: 3}

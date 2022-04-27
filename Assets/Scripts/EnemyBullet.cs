@@ -2,16 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBullet : Bullet
+namespace DevTask.Bullets
 {
-    public float PushBackForce;
-
-    protected override void TriggerCollision(Collider collision)
+    public class EnemyBullet : Bullet
     {
-        if (collision.tag.Equals("Player"))
+        public float PushBackForce;
+
+        protected override void TriggerCollision(Collider collision)
         {
-            Player player = collision.GetComponent<Player>();
-            player.PushVelocityImpulse((Rigidbody.velocity.normalized) * PushBackForce);
+            if (collision.CompareTag("Player"))
+            {
+                Player player = collision.GetComponent<Player>();
+                player.PushVelocityImpulse((Rigidbody.velocity.normalized) * PushBackForce);
+            }
         }
     }
 }

@@ -3,38 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIResults : MonoBehaviour
+namespace DevTask.UI
 {
-    public GameObject MainPanel;
-    public Image Background;
-    public Text Title;
-
-    public float AlphaSpeed = 5f;
-    
-    public void Show ()
+    public class UIResults : MonoBehaviour
     {
-        Color color = Background.color;
-        color.a = 0;
-        Background.color = color;
-        Title.gameObject.SetActive(false);
-        MainPanel.SetActive(true);
-    }
+        public GameObject MainPanel;
+        public Image Background;
+        public Text Title;
 
-    public void Update()
-    {
-        if (MainPanel.activeSelf == false)
-            return;
+        public float AlphaSpeed = 5f;
 
-        Color color = Background.color;
-        color.a += Time.deltaTime * AlphaSpeed;
-        color.a = Mathf.Clamp(color.a, 0, 0.5f);
-        Background.color = color;
-
-        if(color.a == 0.5f)
+        public void Show()
         {
-            if (Title.gameObject.activeSelf == false)
+            Color color = Background.color;
+            color.a = 0;
+            Background.color = color;
+            Title.gameObject.SetActive(false);
+        }
+
+        public void Update()
+        {
+            Color color = Background.color;
+            color.a += Time.deltaTime * AlphaSpeed;
+            color.a = Mathf.Clamp(color.a, 0, 0.5f);
+            Background.color = color;
+
+            if (color.a == 0.5f)
             {
-                Title.gameObject.SetActive(true);
+                if (Title.gameObject.activeSelf == false)
+                {
+                    Title.gameObject.SetActive(true);
+                }
             }
         }
     }

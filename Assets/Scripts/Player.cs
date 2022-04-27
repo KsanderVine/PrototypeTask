@@ -1,165 +1,173 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DevTask.Enemies;
+using DevTask.Bullets;
 
-public class Player : MonoBehaviour
+namespace DevTask
 {
-    public static Player Instance;
-
-    [Header("Physics: ")]
-    public Rigidbody Rigidbody;
-    public float PlayerMotionSpeed;
-
-    [Header("Gun & Bullet: ")]
-    public Transform CameraTransform;
-    public Bullet BulletPrefab;
-    public GameObject FireEffect;
-    public Transform FirePoint;
-
-    [SerializeField]
-    private AttackType _attackType;
-    private float _holdAttackDelay;
-    private float _holdAttackCooldown = 0.35f;
-
-    private float _sensitivityX = 1000f;
-    private float _sensitivityY = 1000f;
-
-    private float _cameraRotationX = 0f;
-    private float _playerRotationY = 0f;
-
-    private Enemy _selectedEnemy;
-
-    public enum AttackType
+    public class Player : MonoBehaviour
     {
-        MouseHold,
-        MouseClick
-    }
+        public static Player Instance;
 
-    public void Awake()
-    {
-        Instance = this;
-    }
+        [Header("Physics: ")]
+        public Rigidbody Rigidbody;
+        public float PlayerMotionSpeed;
 
-    public void Start()
-    {
-        _cameraRotationX = CameraTransform.localRotation.eulerAngles.x;
-        _playerRotationY = transform.localRotation.eulerAngles.y;
-    }
+        [Header("Gun & Bullet: ")]
+        public Camera PlayerCamera;
+        public Transform CameraTransform;
+        public GameObject FireEffect;
+        public Transform FirePoint;
 
-    public void FixedUpdate()
-    {
-        if (GameRules.IsRestarting)
-            return;
+        private ObjectsPool _bulletsPool;
 
-        Vector3 direction = Vector3.zero;
+        [SerializeField]
+        private AttackType _attackType;
+        private float _holdAttackDelay;
+        private float _holdAttackCooldown = 0.35f;
 
-        if(Input.GetKey(KeyCode.W))
+        private float _sensitivityX = 1000f;
+        private float _sensitivityY = 1000f;
+
+        private float _cameraRotationX = 0f;
+        private float _playerRotationY = 0f;
+
+        private Enemy _selectedEnemy;
+
+        public enum AttackType
         {
-            direction.z += 1;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            direction.z -= 1;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            direction.x -= 1;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            direction.x += 1;
+            MouseHold,
+            MouseClick
         }
 
-        Rigidbody.AddRelativeForce(direction * PlayerMotionSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
-    }
-
-    public void Update()
-    {
-        if (GameRules.IsRestarting)
-            return;
-
-        if (transform.position.y < -3f)
+        public void Awake()
         {
-            GameRules.RestartLevel(false);
+            Instance = this;
         }
 
-        if (_selectedEnemy != null)
+        public void Start()
         {
-            _selectedEnemy.DeselectEnemy();
-            _selectedEnemy = null;
+            _bulletsPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@PlayerBulletsPool");
+            _cameraRotationX = CameraTransform.localRotation.eulerAngles.x;
+            _playerRotationY = transform.localRotation.eulerAngles.y;
         }
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
-        Debug.DrawRay(transform.position, ray.direction * 1000f, Color.yellow, 0.1f);
 
-        if(Physics.Raycast(ray, out RaycastHit hit))
+        public void FixedUpdate()
         {
-            if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (GameRules.IsRestarting)
+                return;
+            
+            if (_selectedEnemy != null)
             {
-                _selectedEnemy = hit.transform.GetComponent<Enemy>();
-                _selectedEnemy.SelectEnemy();
+                _selectedEnemy.DeselectEnemy();
+                _selectedEnemy = null;
             }
-        }
+            Ray ray = PlayerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
+            Debug.DrawRay(transform.position, ray.direction * 1000f, Color.yellow, 0.1f);
 
-        float speed = .1f;
-    #if UNITY_EDITOR
-        speed = 1f;
-    #endif
-
-        float mouseAxisX = Input.GetAxis("Mouse X") * _sensitivityX * speed * Time.deltaTime;
-        float mouseAxisY = Input.GetAxis("Mouse Y") * _sensitivityY * speed * Time.deltaTime;
-
-        _cameraRotationX += mouseAxisY * -1;
-        _cameraRotationX = Mathf.Clamp(_cameraRotationX, -60f, 60f);
-
-        Quaternion cameraRotation = Quaternion.Euler(_cameraRotationX, 0, 0.0f);
-        CameraTransform.localRotation = cameraRotation;
-
-        _playerRotationY += mouseAxisX;
-        Quaternion playerRotation = Quaternion.Euler(0, _playerRotationY, 0.0f);
-        transform.localRotation = playerRotation;
-
-        if (_attackType == AttackType.MouseClick)
-        {
-            if (Input.GetMouseButtonDown(0))
+            if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                FireGun();
-            }
-        }
-        else
-        {
-            _holdAttackDelay -= Time.deltaTime;
-            if (_holdAttackDelay < 0)
-            {
-                if (Input.GetMouseButton(0))
+                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 {
-                    _holdAttackDelay = _holdAttackCooldown;
+                    _selectedEnemy = hit.transform.GetComponent<Enemy>();
+                    _selectedEnemy.SelectEnemy();
+                }
+            }
+
+            Vector3 direction = Vector3.zero;
+
+            if (Input.GetKey(KeyCode.W))
+            {
+                direction.z += 1;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                direction.z -= 1;
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                direction.x -= 1;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                direction.x += 1;
+            }
+
+            Rigidbody.AddRelativeForce(direction * PlayerMotionSpeed * Time.fixedDeltaTime, ForceMode.VelocityChange);
+        }
+
+        public void Update()
+        {
+            if (GameRules.IsRestarting)
+                return;
+
+            if (transform.position.y < -3f)
+            {
+                GameRules.GetLevelResultsAndReload(false);
+            }
+
+            float speed = .1f;
+#if UNITY_EDITOR
+            speed = 1f;
+#endif
+
+            float mouseAxisX = Input.GetAxis("Mouse X") * _sensitivityX * speed * Time.deltaTime;
+            float mouseAxisY = Input.GetAxis("Mouse Y") * _sensitivityY * speed * Time.deltaTime;
+
+            _cameraRotationX += mouseAxisY * -1;
+            _cameraRotationX = Mathf.Clamp(_cameraRotationX, -60f, 60f);
+
+            Quaternion cameraRotation = Quaternion.Euler(_cameraRotationX, 0, 0.0f);
+            CameraTransform.localRotation = cameraRotation;
+
+            _playerRotationY += mouseAxisX;
+            Quaternion playerRotation = Quaternion.Euler(0, _playerRotationY, 0.0f);
+            transform.localRotation = playerRotation;
+
+            if (_attackType == AttackType.MouseClick)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
                     FireGun();
                 }
             }
+            else
+            {
+                _holdAttackDelay -= Time.deltaTime;
+                if (_holdAttackDelay < 0)
+                {
+                    if (Input.GetMouseButton(0))
+                    {
+                        _holdAttackDelay = _holdAttackCooldown;
+                        FireGun();
+                    }
+                }
+            }
         }
-    }
 
-    private void FireGun()
-    {
-        GameRules.Log("Player shooting");
+        private void FireGun()
+        {
+            GameRules.Log("Player shooting");
 
-        GameObject fireEffect = FireEffect;
-        fireEffect = Instantiate(fireEffect, FirePoint);
-        fireEffect.transform.localPosition = Vector3.zero;
-        fireEffect.transform.forward = FirePoint.forward;
+            GameObject fireEffect = FireEffect;
+            fireEffect = Instantiate(fireEffect, FirePoint);
+            fireEffect.transform.localPosition = Vector3.zero;
+            fireEffect.transform.forward = FirePoint.forward;
 
-        float directionX = _cameraRotationX;
-        float directionY = _playerRotationY;
-        Vector3 direction = new Vector3(directionX, directionY, 0);
+            float directionX = _cameraRotationX;
+            float directionY = _playerRotationY;
+            Vector3 direction = new Vector3(directionX, directionY, 0);
 
-        Bullet bullet = Instantiate(BulletPrefab);
-        bullet.transform.position = FirePoint.transform.position;
-        bullet.Fire(FirePoint.forward);
-    }
+            Bullet bullet = (Bullet)_bulletsPool.Create<Bullet>();
+            bullet.transform.position = FirePoint.transform.position;
+            bullet.Fire(FirePoint.forward);
+        }
 
-    public void PushVelocityImpulse (Vector3 velocity)
-    {
-        GameRules.Log("Player thrown back");
-        Rigidbody.AddForce(velocity, ForceMode.Impulse);
+        public void PushVelocityImpulse(Vector3 velocity)
+        {
+            GameRules.Log("Player thrown back");
+            Rigidbody.AddForce(velocity, ForceMode.Impulse);
+        }
     }
 }
