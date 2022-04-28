@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DevTask.Bullets;
+using DevTask.Selection;
 
 namespace DevTask.Enemies
 {
-    public class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour, ISelectableRenderer
     {
         [Header("Main: ")]
         public Rigidbody Rigidbody;
@@ -28,14 +29,27 @@ namespace DevTask.Enemies
 
         public float AttackCooldown;
         private float _attackCooldown;
-        
+
+        private Player _player;
         private bool _isTrackingPlayer;
         private bool _isDead;
 
+        //ISelectableRenderer
+        public Transform GetTransform() => transform;
+        public Renderer GetRenderer() => MeshRenderer;
+        public Material GetDefaultMaterial() => Material;
+
+        public bool IsDestroyed { get; private set; }
+        private void OnDestroy()
+        {
+            IsDestroyed = true;
+        }
+        //End
+
         public void Start()
         {
+            _player = FindObjectOfType<Player>(true);
             _bulletsPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@EnemiesBulletsPool");
-            MeshRenderer.material = new Material(Material);
             GameRules.ChangeEnemiesCount(1);
         }
 
@@ -69,7 +83,7 @@ namespace DevTask.Enemies
                 return;
 
             _isTrackingPlayer = false;
-            Vector3 targetDirection = (Player.Instance.transform.position - FirePoint.transform.position).normalized;
+            Vector3 targetDirection = (_player.transform.position - FirePoint.transform.position).normalized;
 
             if (Physics.Raycast(FirePoint.transform.position, targetDirection, out RaycastHit hit))
             {
@@ -82,7 +96,7 @@ namespace DevTask.Enemies
             _attackCooldown -= Time.deltaTime;
             if (_isTrackingPlayer)
             {
-                Vector3 targetPosition = Player.Instance.transform.position;
+                Vector3 targetPosition = _player.transform.position;
                 targetPosition.y = transform.position.y;
 
                 transform.LookAt(targetPosition);
@@ -120,7 +134,7 @@ namespace DevTask.Enemies
             shootEffect = Instantiate(shootEffect);
             shootEffect.transform.position = transform.position;
 
-            Destroy(gameObject, 2f);
+            Destroy(gameObject);
         }
 
         private void FireGun()
@@ -150,16 +164,6 @@ namespace DevTask.Enemies
         {
             _changeDirectionDelay = ChangeDirectionCooldown;
             _isMovingRight = !_isMovingRight;
-        }
-
-        public void SelectEnemy()
-        {
-            MeshRenderer.material.color = Color.yellow;
-        }
-
-        public void DeselectEnemy()
-        {
-            MeshRenderer.material.color = Color.red;
         }
     }
 }

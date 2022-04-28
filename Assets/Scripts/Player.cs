@@ -8,8 +8,6 @@ namespace DevTask
 {
     public class Player : MonoBehaviour
     {
-        public static Player Instance;
-
         [Header("Physics: ")]
         public Rigidbody Rigidbody;
         public float PlayerMotionSpeed;
@@ -33,17 +31,10 @@ namespace DevTask
         private float _cameraRotationX = 0f;
         private float _playerRotationY = 0f;
 
-        private Enemy _selectedEnemy;
-
         public enum AttackType
         {
             MouseHold,
             MouseClick
-        }
-
-        public void Awake()
-        {
-            Instance = this;
         }
 
         public void Start()
@@ -57,23 +48,6 @@ namespace DevTask
         {
             if (GameRules.IsRestarting)
                 return;
-            
-            if (_selectedEnemy != null)
-            {
-                _selectedEnemy.DeselectEnemy();
-                _selectedEnemy = null;
-            }
-            Ray ray = PlayerCamera.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f));
-            Debug.DrawRay(transform.position, ray.direction * 1000f, Color.yellow, 0.1f);
-
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                if (hit.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-                {
-                    _selectedEnemy = hit.transform.GetComponent<Enemy>();
-                    _selectedEnemy.SelectEnemy();
-                }
-            }
 
             Vector3 direction = Vector3.zero;
 
