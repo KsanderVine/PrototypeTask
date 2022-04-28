@@ -2,9 +2,9 @@
 
 public static class CompontentExtensions
 {
-    public static bool TryGetComponent<T>(this Component component, out T t)
+    public static bool TryGetComponent<T>(this Component parentComponent, out T component)
     {
-        t = component.GetComponent<T>();
-        return t != null;
+        component = parentComponent.GetComponent<T>();
+        return component != null;
     }
 }

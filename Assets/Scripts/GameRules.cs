@@ -58,12 +58,12 @@ namespace DevTask
                 DefeatResult.Show();
             }
 
-            StartCoroutine(ReloadLevel());
+            StartCoroutine(ReloadLevelAfterTime(2f));
         }
 
-        private IEnumerator ReloadLevel()
+        private IEnumerator ReloadLevelAfterTime(float time)
         {
-            yield return new WaitForSecondsRealtime(2f);
+            yield return new WaitForSecondsRealtime(time);
             SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
         }
 

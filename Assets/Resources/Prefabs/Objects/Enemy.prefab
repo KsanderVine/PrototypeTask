@@ -272,12 +272,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rigidbody: {fileID: 3678266569617227164}
   MeshRenderer: {fileID: 3678266569617227166}
-  ShootEffect: {fileID: 3346683278334698605, guid: 90ff35e9b77be6f4999d1e32953ee9ac, type: 3}
   Material: {fileID: 2100000, guid: 61b59fec945eb6440bc116702d1b67f5, type: 2}
-  BulletPrefab: {fileID: 6627941602020251034, guid: 87dea93cca45f8348b00e6212e55bab5, type: 3}
-  FireEffect: {fileID: 3416187714460353738, guid: 8548075b165dd9548bfcdd7551c6f37a, type: 3}
-  Gun: {fileID: 3678266568071158187}
-  FirePoint: {fileID: 3678266569421754014}
-  MotionSpeed: 5
-  ChangeDirectionCooldown: 2
-  AttackCooldown: 1
