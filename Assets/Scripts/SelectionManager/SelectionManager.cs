@@ -10,7 +10,7 @@ namespace DevTask.Selection
 
         private ISelectableRenderer _currentSelected;
 
-        public void Start()
+        public void Awake()
         {
             _rayProvider = GetComponent<IRayProvider>();
             _selector = GetComponent<ISelector>();

@@ -8,7 +8,7 @@ namespace DevTask.Selection
     {
         private Camera _raycastCamera;
 
-        public void Start()
+        public void Awake()
         {
             _raycastCamera = Camera.main;
         }

@@ -15,10 +15,10 @@ namespace DevTask
         [Header("Gun & Bullet: ")]
         public Camera PlayerCamera;
         public Transform CameraTransform;
-        public GameObject FireEffect;
         public Transform FirePoint;
 
         private ObjectsPool _bulletsPool;
+        private ObjectsPool _gunFirePool;
 
         [SerializeField]
         private AttackType _attackType;
@@ -31,15 +31,23 @@ namespace DevTask
         private float _cameraRotationX = 0f;
         private float _playerRotationY = 0f;
 
+        private GameRules _gameRules;
+
         public enum AttackType
         {
             MouseHold,
             MouseClick
         }
 
+        public void Awake()
+        {
+            _gameRules = FindObjectOfType<GameRules>();
+            _bulletsPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@PlayerBulletsPool");
+            _gunFirePool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@GunFirePool");
+        }
+
         public void Start()
         {
-            _bulletsPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@PlayerBulletsPool");
             _cameraRotationX = CameraTransform.localRotation.eulerAngles.x;
             _playerRotationY = transform.localRotation.eulerAngles.y;
         }
@@ -78,7 +86,7 @@ namespace DevTask
 
             if (transform.position.y < -3f)
             {
-                GameRules.GetLevelResultsAndReload(false);
+                _gameRules.GetLevelResultsAndReload(false);
             }
 
             float speed = .1f;
@@ -122,11 +130,10 @@ namespace DevTask
 
         private void FireGun()
         {
-            GameRules.Log("Player shooting");
+            GameRules.GameLog.Log("Player shooting");
 
-            GameObject fireEffect = FireEffect;
-            fireEffect = Instantiate(fireEffect, FirePoint);
-            fireEffect.transform.localPosition = Vector3.zero;
+            GameObject fireEffect = _gunFirePool.Create().GameObject;
+            fireEffect.transform.position = FirePoint.transform.position;
             fireEffect.transform.forward = FirePoint.forward;
 
             float directionX = _cameraRotationX;
@@ -140,7 +147,7 @@ namespace DevTask
 
         public void PushVelocityImpulse(Vector3 velocity)
         {
-            GameRules.Log("Player thrown back");
+            GameRules.GameLog.Log("Player thrown back");
             Rigidbody.AddForce(velocity, ForceMode.Impulse);
         }
     }

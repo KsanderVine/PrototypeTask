@@ -11,15 +11,15 @@ namespace DevTask.Enemies
         [Header("Main: ")]
         public Rigidbody Rigidbody;
         public MeshRenderer MeshRenderer;
-        public GameObject ShootEffect;
         public Material Material;
 
         [Header("Gun: ")]
-        public GameObject FireEffect;
         public GameObject Gun;
         public Transform FirePoint;
 
         private ObjectsPool _bulletsPool;
+        private ObjectsPool _deathPool;
+        private ObjectsPool _gunFirePool;
 
         [Header("Logic: ")]
         public float MotionSpeed = 5f;
@@ -34,6 +34,8 @@ namespace DevTask.Enemies
         private bool _isTrackingPlayer;
         private bool _isDead;
 
+        private GameRules _gameRules;
+
         //ISelectableRenderer
         public Transform GetTransform() => transform;
         public Renderer GetRenderer() => MeshRenderer;
@@ -46,11 +48,18 @@ namespace DevTask.Enemies
         }
         //End
 
-        public void Start()
+        public void Awake()
         {
+            _gameRules = FindObjectOfType<GameRules>();
             _player = FindObjectOfType<Player>(true);
             _bulletsPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@EnemiesBulletsPool");
-            GameRules.ChangeEnemiesCount(1);
+            _deathPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@EnemiesDeathPool");
+            _gunFirePool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@GunFirePool");
+        }
+
+        public void Start()
+        {
+            _gameRules.ChangeEnemiesCount(1);
         }
 
         public void FixedUpdate()
@@ -114,8 +123,8 @@ namespace DevTask.Enemies
             if (_isDead)
                 return;
 
-            GameRules.ChangeEnemiesCount(-1);
-            GameRules.Log("Agent dying");
+            _gameRules.ChangeEnemiesCount(-1);
+            GameRules.GameLog.Log("Agent dying");
 
             Destroy(Gun.gameObject);
             gameObject.layer = LayerMask.NameToLayer("Ghost");
@@ -130,18 +139,16 @@ namespace DevTask.Enemies
         {
             yield return new WaitForSecondsRealtime(delay);
 
-            GameObject shootEffect = ShootEffect;
-            shootEffect = Instantiate(shootEffect);
-            shootEffect.transform.position = transform.position;
+            GameObject deathEffect = _deathPool.Create<IPoolable>().GameObject;
+            deathEffect.transform.position = transform.position;
 
             Destroy(gameObject);
         }
 
         private void FireGun()
         {
-            GameObject fireEffect = FireEffect;
-            fireEffect = Instantiate(fireEffect, FirePoint);
-            fireEffect.transform.localPosition = Vector3.zero;
+            GameObject fireEffect = _gunFirePool.Create().GameObject;
+            fireEffect.transform.position = FirePoint.transform.position;
             fireEffect.transform.forward = FirePoint.forward;
 
             Vector3 direction = FirePoint.forward;

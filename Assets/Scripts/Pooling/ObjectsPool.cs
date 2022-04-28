@@ -36,7 +36,22 @@ namespace DevTask
             newObject.SetActive(false);
         }
 
-        public IPoolable Create<T>() where T: IPoolable
+        public IPoolable Create()
+        {
+            for (int i = 0; i < _pool.Count; i++)
+            {
+                if (_pool[i].GameObject.activeInHierarchy == false)
+                {
+                    return Spawn(_pool[i]);
+                }
+            }
+
+            AddObjectToPool();
+            var lastObject = _pool[_pool.Count - 1];
+            return Spawn(lastObject);
+        }
+
+        public IPoolable Create<T>() where T : IPoolable
         {
             for (int i = 0; i < _pool.Count; i++)
             {

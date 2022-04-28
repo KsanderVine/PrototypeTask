@@ -13,11 +13,16 @@ namespace DevTask.Bullets
         private ObjectsPool _pool;
         private float _lifeTime = 10f;
 
+        private ObjectsPool _breakingEffectPool;
         public GameObject GameObject
         {
             get => gameObject;
         }
 
+        public void Awake()
+        {
+            _breakingEffectPool = FindObjectOfType<ObjectsPoolsManager>().GetPoolWithName("@BulletsBreakingPool");
+        }
 
         public void Fire(Vector3 direction)
         {
@@ -37,8 +42,7 @@ namespace DevTask.Bullets
 
         protected void CreateBreakingEffect()
         {
-            GameObject breakingEffect = BreakingEffect;
-            breakingEffect = Instantiate(breakingEffect);
+            GameObject breakingEffect = _breakingEffectPool.Create<IPoolable>().GameObject;
             breakingEffect.transform.position = transform.position;
         }
 

@@ -4813,7 +4813,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3346683278334698606}
-  - component: {fileID: 3545693341237294760}
+  - component: {fileID: 3874342328176508844}
   m_Layer: 0
   m_Name: EnemyDestroyed
   m_TagString: Untagged
@@ -4836,7 +4836,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3545693341237294760
+--- !u!114 &3874342328176508844
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4845,7 +4845,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3346683278334698605}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 054d6aeac01770040ba52f7271362f7d, type: 3}
+  m_Script: {fileID: 11500000, guid: 99ac16a9c01ba7548b038cb5c1c7a0a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   TimeToDestroy: 2

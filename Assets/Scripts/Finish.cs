@@ -6,13 +6,20 @@ namespace DevTask
 {
     public class Finish : MonoBehaviour
     {
+        private GameRules _gameRules;
+
+        public void Awake()
+        {
+            _gameRules = FindObjectOfType<GameRules>();
+        }
+
         private void OnTriggerStay(Collider collider)
         {
             if (collider.gameObject.CompareTag("Player"))
             {
-                if (GameRules.EnemiesCount == 0)
+                if (_gameRules.EnemiesCount == 0)
                 {
-                    GameRules.GetLevelResultsAndReload(true);
+                    _gameRules.GetLevelResultsAndReload(true);
                 }
             }
         }
